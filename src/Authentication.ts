@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+type RegisterParameters = { mail: string; password: string; firstname: string; lastname: string }
+type LoginParameters = { mail: string; password: string }
+
 class Authentication {
     private readonly hostname = 'https://sso.quiches.ovh/api/application-users';
 
@@ -15,7 +18,7 @@ class Authentication {
         return `${url}?publicKey=${this.publicKey}`;
     }
 
-    login = async (mail: string, password: string): Promise<void> => {
+    login = async ({ mail, password }: LoginParameters): Promise<void> => {
         const config = {
             headers: {
                 'Content-Type': 'application/json',
@@ -36,7 +39,9 @@ class Authentication {
         }
     }
 
-    register = async (mail: string, password: string, firstname: string, lastname: string): Promise<void> => {
+    register = async ({
+        mail, password, firstname, lastname,
+    }: RegisterParameters): Promise<void> => {
         const config = {
             headers: {
                 'Content-Type': 'application/json',
@@ -73,7 +78,7 @@ class Authentication {
     //     }
     // }
 
-    private setToken = (token: string, refreshToken: string) => {
+    private setToken = (token: string, refreshToken: string): void => {
         // eslint-disable-next-line no-undef
         window.localStorage.setItem(this.localStorageKey, JSON.stringify({ token, refreshToken }));
     }
