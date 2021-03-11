@@ -5,9 +5,7 @@
 
 ## Description
 
-This package is used to connect and upload files to my file server. To be able to use this service,
-it is necessary to make me a request for a token. It is also possible to install the file server
-on your machine but the package is not yet public.
+
 
 
 ## Documentation
