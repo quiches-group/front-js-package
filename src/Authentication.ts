@@ -28,7 +28,7 @@ class Authentication {
         try {
             // @ts-ignore
             const result = await axios(config);
-            const { token, refreshToken } = result.data;
+            const { token, refreshToken } = result.data.data;
 
             this.setToken(token, refreshToken);
         } catch (e) {

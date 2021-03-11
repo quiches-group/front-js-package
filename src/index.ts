@@ -8,6 +8,4 @@ const QuicheStack = (publicKey: string): QuicheStackReturn => ({
 
 export default QuicheStack;
 
-export {
-    Authentication,
-};
+export { Authentication };
