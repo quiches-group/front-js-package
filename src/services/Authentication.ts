@@ -1,4 +1,5 @@
 import axios from 'axios';
+import IndexedDBService from '../tools/IndexedDBService';
 
 type RegisterParameters = { mail: string; password: string; firstname: string; lastname: string }
 type LoginParameters = { mail: string; password: string }
@@ -8,7 +9,7 @@ class Authentication {
 
     private readonly publicKey: string;
 
-    private readonly localStorageKey = 'quiche-sso-login';
+    private readonly indexedDBService = IndexedDBService;
 
     constructor(publicKey: string) {
         this.publicKey = publicKey;
@@ -33,7 +34,7 @@ class Authentication {
             const result = await axios(config);
             const { token, refreshToken } = result.data.data;
 
-            this.setToken(token, refreshToken);
+            await this.setToken(token, refreshToken);
         } catch (e) {
             throw new Error();
         }
@@ -78,22 +79,17 @@ class Authentication {
     //     }
     // }
 
-    private setToken = (token: string, refreshToken: string): void => {
-        // eslint-disable-next-line no-undef
-        window.localStorage.setItem(this.localStorageKey, JSON.stringify({ token, refreshToken }));
-    }
+    private setToken = (token: string, refreshToken: string): Promise<void> =>
+        this.indexedDBService.addToken({ token, refreshToken })
 
-    getToken = (): string | null => {
-        // eslint-disable-next-line no-undef
-        const localStorageData = window.localStorage.getItem(this.localStorageKey);
+    getToken = async (): Promise<string> => {
+        try {
+            const { token } = await this.indexedDBService.getToken();
 
-        if (!localStorageData) {
-            return null;
+            return token;
+        } catch {
+            throw new Error();
         }
-
-        const parsedData = JSON.parse(localStorageData);
-
-        return parsedData.token ?? null;
     }
 }
 
