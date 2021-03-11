@@ -28,7 +28,7 @@ $ yarn add @quiches/front
 
 **Usage**
 
-The public key is generate on dashboard at : https://dashboard.quiches.ovh.
+The public key is generated on the dashboard at : https://dashboard.quiches.ovh.
 
 ```js
 import QuichesStack from '@quiches/front';
