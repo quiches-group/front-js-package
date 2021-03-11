@@ -10,7 +10,7 @@ class Authentication {
     }
 
     private injectPublicKey(url: string): string {
-        return `${url}?=publicKey=${this.publicKey}`;
+        return `${url}?publicKey=${this.publicKey}`;
     }
 
     login = async ({ mail, password }: { mail: string; password: string }): Promise<void> => {
