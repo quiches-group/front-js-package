@@ -1,7 +1,7 @@
 # Filer Server Module
 
-[![npm](https://img.shields.io/npm/v/@maxencemottard/file-server-module?style=for-the-badge)](https://www.npmjs.com/package/@quiches/front)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/statusquiches-group/front-js-package/actions?style=for-the-badge)
+[![npm](https://img.shields.io/npm/v/@quiches/front?style=for-the-badge)](https://www.npmjs.com/package/@quiches/front)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/quiches-group/front-js-package/deploy?style=for-the-badge)
 
 ## Description
 
@@ -16,62 +16,81 @@ on your machine but the package is not yet public.
 
 Using npm:
 ````bash
-$ npm install @maxencemottard/file-server-module --save
+$ npm install @quiches/front --save
 ````
 
 Using yarn:
 ````bash
-$ yarn add @maxencemottard/file-server-module
+$ yarn add @quiches/front
 ````
 
 ### 2- Examples
 
-**Instantiate class**
+**Usage**
+
+The public key is generate on dashboard at : https://dashboard.quiches.ovh.
 
 ```js
-import FileServer from '@maxencemottard/file-server-module';
+import QuichesStack from '@quiches/front';
 
-const FILE_SERVER_API_KEY = 'MY_API_KEY';
-const fileServer = new FileServer({ apiKey: FILE_SERVER_API_KEY });
-```
+const PUBLIC_KEY = 'pub_xxxxx';
+const quiches = QuichesStack(PUBLIC_KEY);
+const auth = quiches.auth;
 
-**Instantiate class if you use you own server**
+// or
+import { Authentication } from '@quiches/front';
 
-```js
-import FileServer from '@maxencemottard/file-server-module';
-
-const FILE_SERVER_API_KEY = 'MY_API_KEY';
-const FILE_SERVER_HOSTNAME = "https://domain.com"
-const fileServer = new FileServer({ apiKey: FILE_SERVER_API_KEY, hostname: FILE_SERVER_HOSTNAME });
+const PUBLIC_KEY = 'pub_xxxxx';
+const auth = new Authentication(PUBLIC_KEY);
 ```
 
 
+### 3- Authentication
+The Authentication class has 3 available methods.
 
-**⚠️ If you want to upload an image uploaded from your API with express, I recommend using the [express-fileupload](https://www.npmjs.com/package/express-fileupload) package. ⚠️**
+#### 1- Login
+This method has 2 parameters which are `mail` and `password`, they are of type string.
 
-**Upload a file from express-fileupload**
+It returns a promise.
 
-```js
-import { UploadedFile } from 'express-fileupload';
+````js
+const auth = quiches.auth;
 
-async function uploadFile(uploadedFile: UploadedFile) {
-  try {
-    const fileurl = await fileServer.uploadFileToServerFromExpressFileUpload(uploadedFile);
-  } catch (e) {
-    consolle.log(e);
-  }
-}
-```
+const mail = 'user@domain.ext';
+const password = 'passxx';
 
-**Upload a file stored on your machine.**
+auth.login({ mail: mail, password: password })
+  .then(() => console.log('success'))
+  .catch(() => console.log('error'))
+````
 
-```js
-async function uploadFile(filePath: string) {
-  try {
-    const fileurl = await fileServer.uploadFileToServer(uploadedFile);
-  } catch (e) {
-    consolle.log(e);
-  }
-}
-```
+#### 2- Register
+This method has 4 parameters which are `mail`, `password`, `firstname` and `lastanme`, they are of type string.
 
+It returns a promise.
+
+````js
+const auth = quiches.auth;
+
+const mail = 'user@domain.ext';
+const password = 'passxx';
+const firstname = 'John';
+const lastname = 'Doe';
+
+auth.register({ mail: mail, password: password, firstname: firstname, lastname: lastname })
+  .then(() => console.log('success'))
+  .catch(() => console.log('error'))
+````
+
+#### 3- Get JWT Token
+If you need to retrieve the JWT token to make requests to your API, there is a method to retrieve this token.
+
+If you need to retrieve the JWT token to make requests to your API, there is a method to retrieve this token.
+
+````js
+const auth = quiches.auth;
+
+auth.getToken({ mail: mail, password: password })
+  .then((token) => console.log(token))
+  .catch(() => console.log('error'))
+````
