@@ -1,7 +1,7 @@
 # Filer Server Module
 
-[![npm](https://img.shields.io/npm/v/@maxencemottard/file-server-module?style=for-the-badge)](https://www.npmjs.com/package/@maxencemottard/file-server-module)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MaxenceMottard/file-server-module/actions?style=for-the-badge)
+[![npm](https://img.shields.io/npm/v/@maxencemottard/file-server-module?style=for-the-badge)](https://www.npmjs.com/package/@quiches/front)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/statusquiches-group/front-js-package/actions?style=for-the-badge)
 
 ## Description
 
