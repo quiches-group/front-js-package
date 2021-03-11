@@ -1,9 +1,9 @@
-import Authentication from './services/Authentication';
+import Authentication from './Authentication';
 
-type QuicheStackReturn = { Authentication: Authentication };
+type QuicheStackReturn = { auth: Authentication };
 
 const QuicheStack = (publicKey: string): QuicheStackReturn => ({
-    Authentication: new Authentication(publicKey),
+    auth: new Authentication(publicKey),
 });
 
 export default QuicheStack;
