@@ -10,40 +10,53 @@ class IndexedDBService {
 
     // @ts-ignore
     private table: IDBObjectStore;
-
-    constructor() {}
     
-    setupConnec = (): Promise<IndexDBService> => new Promise((resolve, reject) => {
-        const isSetupAllDone = false;
-        
-        // eslint-disable-next-line no-undef
-        const request = window.indexedDB.open(this.dbName);
+    // @ts-ignore
+    static private indexedDBServiceInstance: IndexedDBService;
+    
+    private setupConnection(): Promise<void> {
+        return new Promise ((resolve, reject) => {
+            // eslint-disable-next-line no-undef
+            const request = window.indexedDB.open(this.dbName);
 
-        request.onsuccess = (e: Event): void => {
-            const target = e.target as IDBOpenDBRequest;
-            this.db = target.result;
-            
-            if (isSetupAllDone) {
+            request.onsuccess = (e: Event): void => {
+                const target = e.target as IDBOpenDBRequest;
+                this.db = target.result;
+
                 resolve();
-            }
-        };
+            };
 
-        request.onupgradeneeded = (e: Event): void => {
-            const target = e.target as IDBOpenDBRequest;
-            this.db = target.result;
+            // TODO: Improve implementation by following the moz documentation
+            // https://developer.mozilla.org/en-US/docs/Web/API/IDBOpenDBRequest/onupgradeneeded#example
+            request.onupgradeneeded = (e: Event): void => {
+                const target = e.target as IDBOpenDBRequest;
+                this.db = target.result;
 
-            this.table = this.db.createObjectStore(this.tableName, { autoIncrement: true });
-            
-            if (isSetupAllDone) {
+                this.table = this.db.createObjectStore(this.tableName, { autoIncrement: true });
+
                 resolve();
+            };
+
+            request.onerror = (): void => {
+                reject();
             }
-        };
-        
-        
-        request.onerror = (): void => {
-            reject();
-        }
+        });
     }
+    
+    static getInstance = (): Promise<IndexedDBService | null> => {
+        return new Promise(async (resolve, reject) => {
+            if(!IndexedDBService.indexedDBServiceInstance) {
+                try {
+                    IndexedDBService.indexedDBServiceInstance = new IndexedDBService();
+                    await IndexedDBService.indexedDBServiceInstance.setupConnection();
+                } catch (e) {
+                    return reject(null);
+                }
+            }
+            
+            return resolve(IndexedDBService.indexedDBServiceInstance);
+        });
+    };
 
     addToken = (data: TokenAndRefreshType): Promise<void> => new Promise((resolve, reject) => {
         const tx = this.db.transaction([this.tableName], 'readwrite');
