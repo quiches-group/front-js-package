@@ -11,13 +11,21 @@ class IndexedDBService {
     // @ts-ignore
     private table: IDBObjectStore;
 
-    constructor() {
+    constructor() {}
+    
+    setupConnec = (): Promise<IndexDBService> => new Promise((resolve, reject) => {
+        const isSetupAllDone = false;
+        
         // eslint-disable-next-line no-undef
         const request = window.indexedDB.open(this.dbName);
 
         request.onsuccess = (e: Event): void => {
             const target = e.target as IDBOpenDBRequest;
             this.db = target.result;
+            
+            if (isSetupAllDone) {
+                resolve();
+            }
         };
 
         request.onupgradeneeded = (e: Event): void => {
@@ -25,7 +33,16 @@ class IndexedDBService {
             this.db = target.result;
 
             this.table = this.db.createObjectStore(this.tableName, { autoIncrement: true });
+            
+            if (isSetupAllDone) {
+                resolve();
+            }
         };
+        
+        
+        request.onerror = (): void => {
+            reject();
+        }
     }
 
     addToken = (data: TokenAndRefreshType): Promise<void> => new Promise((resolve, reject) => {
